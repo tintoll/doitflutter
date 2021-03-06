@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tab_listview_exam/animalItem.dart';
+import 'package:tab_listview_exam/cupertino/cupertino_main.dart';
 import 'package:tab_listview_exam/first_page.dart';
 import 'package:tab_listview_exam/seconds_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(CupertinoMain());
 }
 
 class MyApp extends StatelessWidget {
