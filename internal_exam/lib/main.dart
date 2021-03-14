@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -13,75 +16,63 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: FileApp(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
+class FileApp extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _FileAppState createState() => _FileAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _FileAppState extends State<FileApp> {
 
+  int _count = 0;
   @override
   void initState() {
     super.initState();
-    _getLoadData();
-  }
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-      _setData(_counter);
-    });
+    readCountFile();
   }
 
-  _setData(int counter) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setInt("count", counter);
-  }
-
-  _getLoadData() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      var cnt = sharedPreferences.getInt("count");
-      if(cnt == null) {
-        _counter = 0;
-      } else {
-        _counter = cnt;
-      }
-    });
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title : Text('File Example')
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+      body: Container(
+        child: Center(
+          child: Text(
+            '$_count',
+            style: TextStyle(fontSize: 40),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () {
+          setState(() {
+            _count++;
+          });
+          writeCountFile(_count);
+        },
         child: Icon(Icons.add),
+
       ),
     );
+  }
+
+  void writeCountFile(int count) async {
+    var dir = await getApplicationDocumentsDirectory();
+    File(dir.path+ '/count.txt').writeAsString(count.toString());
+  }
+
+  void readCountFile() async {
+    var dir = await getApplicationDocumentsDirectory();
+    var file = await File(dir.path + '/count.txt').readAsString();
+    print(file);
+    setState(() {
+      _count = int.parse(file);
+    });
   }
 }
