@@ -12,7 +12,6 @@ class DatabaseApp extends StatefulWidget {
 }
 
 class _DatabaseAppState extends State<DatabaseApp> {
-
   Future<List<Todo>> todoList;
 
   @override
@@ -29,7 +28,7 @@ class _DatabaseAppState extends State<DatabaseApp> {
       ),
       body: FutureBuilder(
         builder: (context, snapshot) {
-          switch(snapshot.connectionState) {
+          switch (snapshot.connectionState) {
             case ConnectionState.none:
               return CircularProgressIndicator();
             case ConnectionState.waiting:
@@ -39,18 +38,60 @@ class _DatabaseAppState extends State<DatabaseApp> {
             case ConnectionState.done:
               if (snapshot.hasData) {
                 return ListView.builder(
-                    itemBuilder: (context,index){
-                  Todo todo = snapshot.data[index];
-                  return Card(
-                    child: Column(
-                      children: [
-                        Text(todo.title),
-                        Text(todo.content),
-                        Text(todo.active.toString()),
-                      ],
-                    ),
-                  );
-                }, itemCount: snapshot.data.length,);
+                  itemBuilder: (context, index) {
+                    Todo todo = snapshot.data[index];
+                    return ListTile(
+                      title: Text(
+                        todo.title,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      subtitle: Container(
+                        child: Column(
+                          children: [
+                            Text(todo.content),
+                            Text('체크 : ${todo.active.toString()}'),
+                            Container(
+                              height: 1,
+                              color: Colors.blue,
+                            )
+                          ],
+                        ),
+                      ),
+                      onTap: () async {
+                        Todo result = await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('${todo.id} : ${todo.title}'),
+                                content: Text('Todo를 체크하시겠습니까?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        todo.active = !todo.active;
+                                      });
+                                      Navigator.of(context).pop(todo);
+                                    },
+                                    child: Text('예'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('아니오'),
+                                  ),
+                                ],
+                              );
+                            });
+
+                        if (result != null) {
+                          _updateTodo(result);
+                        }
+                      },
+                    );
+                  },
+                  itemCount: snapshot.data.length,
+                );
               } else {
                 return CircularProgressIndicator();
               }
@@ -81,6 +122,20 @@ class _DatabaseAppState extends State<DatabaseApp> {
           content: maps[i]['content'].toString(),
           active: active,
           id: maps[i]['id']);
+    });
+  }
+
+  void _updateTodo(Todo todo) async {
+    final Database database = await widget.db;
+    await database.update(
+      'todos',
+      todo.toMap(),
+      where: 'id=?',
+      whereArgs: [todo.id],
+    );
+
+    setState(() {
+      todoList = getTodos();
     });
   }
 
