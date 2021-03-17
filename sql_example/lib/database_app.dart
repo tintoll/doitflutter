@@ -25,6 +25,17 @@ class _DatabaseAppState extends State<DatabaseApp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Database Example'),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await Navigator.of(context).pushNamed('/clear');
+              // setState(() {
+              //   todoList = getTodos();
+              // });
+            },
+            child: Text('완료한 일', style: TextStyle(color: Colors.white),),
+          ),
+        ],
       ),
       body: FutureBuilder(
         builder: (context, snapshot) {
@@ -58,8 +69,8 @@ class _DatabaseAppState extends State<DatabaseApp> {
                         ),
                       ),
                       onTap: () async {
-
-                        TextEditingController controller = TextEditingController(text: todo.content);
+                        TextEditingController controller =
+                            TextEditingController(text: todo.content);
 
                         Todo result = await showDialog(
                             context: context,
@@ -134,15 +145,42 @@ class _DatabaseAppState extends State<DatabaseApp> {
         },
         future: todoList,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final todo = await Navigator.of(context).pushNamed('/add');
-          _insertTodo(todo);
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: Column(
+        children: [
+          FloatingActionButton(
+            onPressed: () async {
+              final todo = await Navigator.of(context).pushNamed('/add');
+              if (todo != null) {
+                _insertTodo(todo);
+              }
+            },
+            child: Icon(Icons.add),
+            heroTag: null,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
+            onPressed: () async {
+              _allUpdate();
+            },
+            child: Icon(Icons.update),
+            heroTag: null,
+          ),
+        ],
+        mainAxisAlignment: MainAxisAlignment.end,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  void _allUpdate() async {
+    final Database database = await widget.db;
+    final List<Map<String, dynamic>> maps =
+        await database.rawQuery('update todos set active = 1 where active = 0');
+    setState(() {
+      todoList = getTodos();
+    });
   }
 
   Future<List<Todo>> getTodos() async {
