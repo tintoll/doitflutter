@@ -58,17 +58,24 @@ class _DatabaseAppState extends State<DatabaseApp> {
                         ),
                       ),
                       onTap: () async {
+
+                        TextEditingController controller = TextEditingController(text: todo.content);
+
                         Todo result = await showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: Text('${todo.id} : ${todo.title}'),
-                                content: Text('Todo를 체크하시겠습니까?'),
+                                content: TextField(
+                                  controller: controller,
+                                  keyboardType: TextInputType.text,
+                                ),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       setState(() {
                                         todo.active = !todo.active;
+                                        todo.content = controller.value.text;
                                       });
                                       Navigator.of(context).pop(todo);
                                     },
@@ -86,6 +93,33 @@ class _DatabaseAppState extends State<DatabaseApp> {
 
                         if (result != null) {
                           _updateTodo(result);
+                        }
+                      },
+                      onLongPress: () async {
+                        Todo result = await showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text('${todo.id} : ${todo.title}'),
+                                content: Text('${todo.content}를 삭제하시겠습니까?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(todo);
+                                    },
+                                    child: Text('예'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('아니오'),
+                                  ),
+                                ],
+                              );
+                            });
+                        if (result != null) {
+                          _deleteTodo(result);
                         }
                       },
                     );
@@ -122,6 +156,18 @@ class _DatabaseAppState extends State<DatabaseApp> {
           content: maps[i]['content'].toString(),
           active: active,
           id: maps[i]['id']);
+    });
+  }
+
+  void _deleteTodo(Todo todo) async {
+    final Database database = await widget.db;
+    await database.delete(
+      'todos',
+      where: 'id=?',
+      whereArgs: [todo.id],
+    );
+    setState(() {
+      todoList = getTodos();
     });
   }
 
