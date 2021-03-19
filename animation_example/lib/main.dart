@@ -1,4 +1,5 @@
 import 'package:animation_example/People.dart';
+import 'package:animation_example/second_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -100,7 +101,6 @@ class _AnimationAppState extends State<AnimationApp> {
                   height: 200,
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -116,7 +116,9 @@ class _AnimationAppState extends State<AnimationApp> {
                       },
                       child: Text('이전'),
                     ),
-                    SizedBox(width: 40,),
+                    SizedBox(
+                      width: 40,
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -128,7 +130,9 @@ class _AnimationAppState extends State<AnimationApp> {
                       },
                       child: Text('다음'),
                     ),
-                    SizedBox(width: 40,),
+                    SizedBox(
+                      width: 40,
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -136,6 +140,27 @@ class _AnimationAppState extends State<AnimationApp> {
                         });
                       },
                       child: Text('사라지기'),
+                    ),
+                    SizedBox(
+                      width: 40,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SecondPage()));
+                      },
+                      child: SizedBox(
+                        width: 200,
+                        child: Row(
+                          children: [
+                            Hero(
+                              tag: 'detail',
+                              child: Icon(Icons.cake),
+                            ),
+                            Text('이동하기'),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -148,6 +173,7 @@ class _AnimationAppState extends State<AnimationApp> {
       ),
     );
   }
+
   void _changeWeightColor(double weight) {
     if (weight < 40) {
       weightColor = Colors.blueAccent;
