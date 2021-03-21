@@ -1,6 +1,7 @@
 import 'package:animation_example/People.dart';
 import 'package:animation_example/intro.dart';
 import 'package:animation_example/second_page.dart';
+import 'package:animation_example/sliver_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -162,6 +163,17 @@ class _AnimationAppState extends State<AnimationApp> {
                           ],
                         ),
                       ),
+                    ),
+
+                    SizedBox(
+                      width: 40,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SliverPage()));
+                      },
+                      child: Text('페이지 이동'),
                     ),
                   ],
                   mainAxisAlignment: MainAxisAlignment.center,
