@@ -34,6 +34,27 @@ class FirebaseApp extends StatefulWidget {
 }
 
 class _FirebaseAppState extends State<FirebaseApp> {
+  String _message = '';
+
+  void setMessage(String message) {
+    setState(() {
+      _message = message;
+    });
+  }
+
+  Future<void> _sendAnalyticsEvent() async {
+    // 애널리틱스의 logEvent를 호출해 test_event 라는 키값으로 데이터 저장
+    await widget.analytics.logEvent(
+      name: 'test_event',
+      parameters: <String, dynamic>{
+        'string' : 'hello flutter',
+        'int' : 100
+      },
+    );
+
+    setMessage('Analytics 보내기 성공 ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,10 +65,10 @@ class _FirebaseAppState extends State<FirebaseApp> {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: _sendAnalyticsEvent,
               child: Text('테스트'),
             ),
-            Text('메시지'),
+            Text(_message, style: TextStyle(color: Colors.blueAccent),),
           ],
           mainAxisAlignment: MainAxisAlignment.center,
         ),
