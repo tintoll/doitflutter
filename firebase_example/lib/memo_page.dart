@@ -19,7 +19,7 @@ class _MemoPageState extends State<MemoPage> {
   void initState() {
     super.initState();
     _database = FirebaseDatabase(databaseURL: _databaseURL);
-    reference = _database.reference().child('memo');
+    reference = _database.reference().child('memo'); // memo라는 컬렉션을 만든다
 
     reference.onChildAdded.listen((event) {
       print(event.snapshot.value.toString());
@@ -40,6 +40,7 @@ class _MemoPageState extends State<MemoPage> {
           child: memos.length == 0
               ? CircularProgressIndicator()
               : GridView.builder(
+                  // 정형화된 그리드뷰 생성시 사용하는  SliverGridDelegateWithFixedCrossAxisCount
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),
                   itemBuilder: (context, index) {
