@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_example/memo.dart';
 import 'package:firebase_example/memo_detail.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'memo_add.dart';
@@ -13,6 +14,9 @@ class MemoPage extends StatefulWidget {
 class _MemoPageState extends State<MemoPage> {
   FirebaseDatabase _database;
   DatabaseReference reference;
+  FirebaseMessaging _firebaseMessaging;
+
+
   String _databaseURL = 'https://fir-exam-1e9b4-default-rtdb.firebaseio.com/';
   List<Memo> memos = [];
 
@@ -28,6 +32,30 @@ class _MemoPageState extends State<MemoPage> {
         memos.add(Memo.fromSnapshot(event.snapshot));
       });
     });
+
+    // message 초기화
+    _firebaseMessaging = FirebaseMessaging.instance;
+    _firebaseMessaging.getToken().then((value) {
+      print('token : $value');  // 현재 기기의 토큰 값을 가져온다.
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      print('RemoteMessage : $message');
+
+      showDialog(context: context, builder: (context) => AlertDialog(
+        content: ListTile(
+          title: Text(notification.title),
+          subtitle: Text(notification.body),
+        ),
+        actions: [
+          TextButton(onPressed: (){
+            Navigator.of(context).pop();
+          }, child: Text('OK'),)
+        ],
+      ));
+
+    });
+
   }
 
   @override
