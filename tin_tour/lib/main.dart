@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tin_tour/mainPage.dart';
 
 import 'login.dart';
 import 'sign_page.dart';
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/' : (context) => LoginPage(),
-        '/sign' : (context) => SignPage()
+        '/sign' : (context) => SignPage(),
+        '/main' : (context) => MainPage(),
       },
     );
   }
