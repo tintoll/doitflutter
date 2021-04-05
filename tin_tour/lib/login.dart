@@ -170,6 +170,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
               )
             ],
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
         ),
       ),

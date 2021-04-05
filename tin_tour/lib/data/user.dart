@@ -6,7 +6,7 @@ class User {
   String pw;
   String createTime;
 
-  User(this.key, this.id, this.pw, this.createTime);
+  User(this.id, this.pw, this.createTime);
 
   User.fromSnapshot(DataSnapshot snapshot)
       : key = snapshot.key,
