@@ -25,7 +25,7 @@ class _MapPage extends State<MapPage> {
   List<DropdownMenuItem> sublist = [];
   List<TourData> tourData = [];
   ScrollController _scrollController;
-  String authKey = '### 오픈 API 키(일반 인증키) ###';
+  String authKey = 'AUTH KEY';
   Item area;
   Item kind;
   int page = 1;
@@ -155,6 +155,10 @@ class _MapPage extends State<MapPage> {
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => TourDetailPage(
+                                  id: widget.id,
+                                  tourData: tourData[index],
+                                  index: index,
+                                  databaseReference: widget.databaseReference,
                                 )));
                           },
                           onDoubleTap: () {
@@ -186,7 +190,7 @@ class _MapPage extends State<MapPage> {
 
   void getAreaList({int area, int contentTypeId, int page}) async {
     var url =
-        'http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey =$authKey & MobileOS = AND & MobileApp = ModuTour &_type = json & areaCode = 1 & sigunguCode = $area & pageNo = $page';
+        'http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=$authKey&MobileOS=AND&MobileApp=ModuTour&_type=json&areaCode=1&sigunguCode=$area&pageNo=$page';
     if (contentTypeId != 0) {
       url = url + '&contentTypeId=$contentTypeId';
     }
