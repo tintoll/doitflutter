@@ -1,10 +1,14 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:tin_tour/main/favoritePage.dart';
 import 'package:tin_tour/main/mapPage.dart';
 import 'package:tin_tour/main/settingPage.dart';
 
 class MainPage extends StatefulWidget {
+  final Future<Database> database;
+  MainPage(this.database);
+
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -38,8 +42,16 @@ class _MainPageState extends State<MainPage>
     return Scaffold(
       body: TabBarView(
         children: [
-          MapPage(),
-          FavoritePage(),
+          MapPage(
+            databaseReference: reference,
+            db: widget.database,
+            id: id,
+          ),
+          FavoritePage(
+            databaseReference: reference,
+            db: widget.database,
+            id: id,
+          ),
           SettingPage(),
         ],
         controller: controller,
