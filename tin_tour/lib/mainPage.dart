@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tin_tour/main/favoritePage.dart';
 import 'package:tin_tour/main/mapPage.dart';
@@ -22,18 +24,62 @@ class _MainPageState extends State<MainPage>
   TabController controller;
   String id;
 
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  bool pushCheck = true;
+
   @override
   void initState() {
     super.initState();
     controller = TabController(length: 3, vsync: this);
     _database = FirebaseDatabase(databaseURL: _databaseURL);
     reference = _database.reference();
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        _loadData();
+        print(pushCheck);
+        if (pushCheck) {showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+        }
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        _loadData();
+        if (pushCheck) {
+          Navigator.of(context).pushNamed('/');
+        }
+      },
+      onResume: (Map<String, dynamic> message) async {
+        _loadData();
+        if (pushCheck) {
+          Navigator.of(context).pushNamed('/');
+        }
+      },
+    );
+
   }
 
   @override
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+  void _loadData() async {
+    var key = "push";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pushCheck = pref.getBool(key);
   }
 
   @override
