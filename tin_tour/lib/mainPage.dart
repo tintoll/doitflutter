@@ -52,7 +52,10 @@ class _MainPageState extends State<MainPage>
             db: widget.database,
             id: id,
           ),
-          SettingPage(),
+          SettingPage(
+            databaseReference: reference,
+            id: id,
+          ),
         ],
         controller: controller,
       ),
