@@ -1,3 +1,4 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,27 +16,45 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   bool pushCheck = true;
 
+  BannerAd _bannerAd;
+  BannerAd createBannerAd() {
+    if(mounted) {
+      return BannerAd(
+        adUnitId: BannerAd.testAdUnitId, // 광고 단위 ID 넣기
+        size: AdSize.banner,
+        listener: (MobileAdEvent event) {
+          print('$event');
+        },
+      );
+    }else{
+      return null;
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
+    _bannerAd..dispose();
+    _bannerAd = null;
   }
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    _bannerAd = createBannerAd();
   }
 
   @override
   Widget build(BuildContext context) {
-    // if(_bannerAd !=null && mounted) {
-    //   _bannerAd
-    //     ..load()
-    //     ..show(
-    //       anchorOffset: 60,
-    //       anchorType: AnchorType.bottom,
-    //     );
-    // }
+    if(_bannerAd !=null && mounted) {
+      _bannerAd
+        ..load()
+        ..show(
+          anchorOffset: 60,
+          anchorType: AnchorType.bottom,
+        );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('설정하기'),

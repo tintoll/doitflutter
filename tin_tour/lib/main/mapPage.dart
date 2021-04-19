@@ -25,7 +25,7 @@ class _MapPage extends State<MapPage> {
   List<DropdownMenuItem> sublist = [];
   List<TourData> tourData = [];
   ScrollController _scrollController;
-  String authKey = 'AUTH KEY';
+  String authKey = 'GMGfoOwfJBEQYPrjhIf2dF86GFOR7BApU7%2FjR5zwJcycXMHGXe%2F1kKZGAMeBUgJGxoQ%3D%3D';
   Item area;
   Item kind;
   int page = 1;
@@ -190,7 +190,7 @@ class _MapPage extends State<MapPage> {
 
   void getAreaList({int area, int contentTypeId, int page}) async {
     var url =
-        'http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?ServiceKey=$authKey&MobileOS=AND&MobileApp=ModuTour&_type=json&areaCode=1&sigunguCode=$area&pageNo=$page';
+        'http://api.visitkorea.or.kr/openapi/service/rest/KorService/areaBasedList?serviceKey=$authKey&MobileOS=AND&MobileApp=ModuTour&_type=json&areaCode=1&sigunguCode=$area&pageNo=$page';
     if (contentTypeId != 0) {
       url = url + '&contentTypeId=$contentTypeId';
     }
